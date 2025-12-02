@@ -1,5 +1,6 @@
-import { Controller, Post, Get, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
+﻿import { Controller, Post, Get, Body, Param, HttpStatus, HttpException, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('api/auth')
 export class AuthController {
@@ -16,11 +17,11 @@ export class AuthController {
       throw new HttpException({ error: 'email ya existe' }, HttpStatus.FORBIDDEN);
     }
 
-    // crear usuario
-    const user = await this.authService.createUser(name, email, password);
-
+    // crear usuario con JWT
+    const { user, token } = await this.authService.createUser(name, email, password);
+    
     return {
-      authToken: `token_${user._id}`,
+      authToken: token,
       userId: user._id,
     };
   }
@@ -30,20 +31,33 @@ export class AuthController {
   async login(@Body() body: { email: string; password: string }) {
     const { email, password } = body;
 
-    // buscar usuario
-    const user = await this.authService.findByEmail(email);
-
-    if (!user || user.password !== password) {
-      throw new HttpException({ error: 'credenciales invalidas' }, HttpStatus.FORBIDDEN);
-    }
+    // validar usuario y generar token
+    const { user, token } = await this.authService.login(email, password);
 
     return {
-      authToken: `token_${user._id}`,
+      authToken: token,
       userId: user._id,
     };
   }
 
-  // obtener usuario
+  // obtener usuario (protegido con JWT)
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Request() req) {
+    const user = await this.authService.findById(req.user.userId);
+
+    if (!user) {
+      throw new HttpException({ error: 'usuario no encontrado' }, HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+  }
+
+  // mantener endpoint antiguo por compatibilidad
   @Get('me/:userId')
   async getUser(@Param('userId') userId: string) {
     const user = await this.authService.findById(userId);
