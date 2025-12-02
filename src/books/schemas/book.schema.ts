@@ -1,0 +1,22 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+@Schema({ collection: 'books' })
+export class Book extends Document {
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  author: string;
+
+  @Prop({ required: true })
+  price: number;
+
+  @Prop({ required: true })
+  category: string;
+
+  @Prop()
+  imageUrl: string;
+}
+
+export const BookSchema = SchemaFactory.createForClass(Book);
