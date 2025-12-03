@@ -21,10 +21,10 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new this.userModel({ name, email, password: hashedPassword });
     const savedUser = await newUser.save();
-    
-    const token = this.jwtService.sign({ 
-      sub: savedUser._id, 
-      email: savedUser.email 
+
+    const token = this.jwtService.sign({
+      sub: savedUser._id,
+      email: savedUser.email
     });
 
     return { user: savedUser, token };
@@ -50,9 +50,9 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const token = this.jwtService.sign({ 
-      sub: user._id, 
-      email: user.email 
+    const token = this.jwtService.sign({
+      sub: user._id,
+      email: user.email
     });
 
     return { user, token };
