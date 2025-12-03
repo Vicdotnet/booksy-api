@@ -1,17 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
+﻿import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
 import { BooksService } from './books.service';
 
 @Controller('api/books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  // obtener todos los libros
   @Get()
   async getAllBooks() {
     return this.booksService.findAll();
   }
 
-  // obtener libro por id
   @Get(':id')
   async getBookById(@Param('id') id: string) {
     const book = await this.booksService.findById(id);
@@ -21,19 +19,16 @@ export class BooksController {
     return book;
   }
 
-  // obtener libros por categoria
   @Get('category/:category')
   async getBooksByCategory(@Param('category') category: string) {
     return this.booksService.findByCategory(category);
   }
 
-  // crear libro
   @Post()
   async createBook(@Body() bookData: any) {
     return this.booksService.create(bookData);
   }
 
-  // actualizar libro
   @Put(':id')
   async updateBook(@Param('id') id: string, @Body() bookData: any) {
     const book = await this.booksService.update(id, bookData);
@@ -43,7 +38,6 @@ export class BooksController {
     return book;
   }
 
-  // eliminar libro
   @Delete(':id')
   async deleteBook(@Param('id') id: string) {
     const result = await this.booksService.delete(id);
