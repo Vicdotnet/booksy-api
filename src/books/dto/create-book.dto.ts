@@ -1,4 +1,4 @@
-﻿import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -20,4 +20,8 @@ export class CreateBookDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 }

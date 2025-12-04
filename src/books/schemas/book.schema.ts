@@ -1,4 +1,4 @@
-﻿import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ collection: 'books' })
@@ -17,6 +17,9 @@ export class Book extends Document {
 
   @Prop()
   imageUrl: string;
+
+  @Prop()
+  description: string;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);
